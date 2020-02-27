@@ -26,18 +26,18 @@ def isValid (redRect, blueRect):
     distance = (abs(RedCenter[0] - BlueCenter[0])**2 + abs(RedCenter[1] - BlueCenter[1])**2)**0.5
     print('distance between centers are %d' % (distance) )
 
-    if (redRect[3]< redRect[4]): #if width is shorter than height
-        if (distance < (redRect[3]+blueRect[3])/4): #should be half of the average
+    if (redRect[2]< redRect[3]): #if width is shorter than height
+        if (distance < (redRect[2]+blueRect[2])/4): #should be half of the average
             print ("distance too close")
             return False
-        if (distance > (redRect[3] + blueRect[3])):
+        if (distance > (redRect[2] + blueRect[2])):
             print ("distance too far")
             return False
     else:
-        if (distance < (redRect[4]+blueRect[4])/4):  #should be half of the average
+        if (distance < (redRect[3]+blueRect[3])/4):  #should be half of the average
             print ("distance too close")
             return False
-        if (distance > (redRect[4] + blueRect[4])):
+        if (distance > (redRect[3] + blueRect[3])):
             print ("distance too far")
             return False
 
@@ -105,19 +105,20 @@ if __name__ == "__main__":
             RedCenter = (redRect[0]+ int(redRect[2]/2), redRect[1]+ int(redRect[3]/2))
 
 
+        if (isValid(redRect, blueRect)):
+            Center = tupleAverage(RedCenter,BlueCenter)
+            Angle = orientation(RedCenter, BlueCenter)
 
-        Center = tupleAverage(RedCenter,BlueCenter)
-        Angle = orientation(RedCenter, BlueCenter)
-
-        cv2.circle(frame, RedCenter, 10, (0, 0, 255), -1)
-        cv2.circle(frame, Center, 10, (0,255,0), -1)
-        cv2.circle(frame, BlueCenter, 10, (255, 0, 0), -1)
-        cv2.putText(frame, ('Center %d,%d' % Center), (10, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (255,255,255), 2, cv2.LINE_AA)
-        cv2.putText(frame, ('Orientation %d' % Angle), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 2,
-                    cv2.LINE_AA)
+            cv2.circle(frame, RedCenter, 10, (0, 0, 255), -1)
+            cv2.circle(frame, Center, 10, (0,255,0), -1)
+            cv2.circle(frame, BlueCenter, 10, (255, 0, 0), -1)
+            cv2.putText(frame, ('Center %d,%d' % Center), (10, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (255,255,255), 2, cv2.LINE_AA)
+            cv2.putText(frame, ('Orientation %d' % Angle), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 2,
+                        cv2.LINE_AA)
         cv2.imshow("tracking", frame)
         cv2.imshow("blue", blue)
         cv2.imshow("red", red)
+
 
 
         time.sleep(0.025)
