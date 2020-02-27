@@ -43,7 +43,7 @@ def isValid (redRect, blueRect):
 
     return True
 
-def orientaiton (RedCenter, BlueCenter):
+def orientation (RedCenter, BlueCenter):
     dy = (RedCenter[1] - BlueCenter[1])
     dx = (RedCenter[0] - BlueCenter[0])
     if (dx ==0): #special case, don't want to divide by 0!
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
             blueRect = cv2.boundingRect(cnt)
             BlueCenter = (blueRect[0]+ int(blueRect[2]/2), blueRect[1]+ int(blueRect[3]/2))
-            cv2.circle(frame, BlueCenter,10, (255,0,0),-1)
+
             print('Blue:  X: %d, Y: %d, W:%d, H:%d' % (blueRect))
 
         if len(redcnts)> 0:
@@ -103,13 +103,18 @@ if __name__ == "__main__":
             print('Red:  X: %d, Y: %d, W:%d, H:%d' % (redRect))
 
             RedCenter = (redRect[0]+ int(redRect[2]/2), redRect[1]+ int(redRect[3]/2))
-            cv2.circle(frame, RedCenter, 10,  (0,0,255), -1)
+
 
 
         Center = tupleAverage(RedCenter,BlueCenter)
+        Angle = orientation(RedCenter, BlueCenter)
 
+        cv2.circle(frame, RedCenter, 10, (0, 0, 255), -1)
         cv2.circle(frame, Center, 10, (0,255,0), -1)
-
+        cv2.circle(frame, BlueCenter, 10, (255, 0, 0), -1)
+        cv2.putText(frame, ('Center %d,%d' % Center), (10, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (255,255,255), 2, cv2.LINE_AA)
+        cv2.putText(frame, ('Orientation %d' % Angle), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 2,
+                    cv2.LINE_AA)
         cv2.imshow("tracking", frame)
         cv2.imshow("blue", blue)
         cv2.imshow("red", red)
