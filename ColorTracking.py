@@ -2,6 +2,7 @@ import argparse
 import time
 import cv2
 import numpy as np
+import math
 from numpy import mean
 def tupleAverage (tuple1, tuple2):
     x = int((tuple1[0] + tuple2[0]) / 2)
@@ -45,12 +46,19 @@ def isValid (redRect, blueRect):
 def orientaiton (RedCenter, BlueCenter):
     dy = (RedCenter[1] - BlueCenter[1])
     dx = (RedCenter[0] - BlueCenter[0])
-    if (dx ==0):
+    if (dx ==0): #special case, don't want to divide by 0!
         if (dy>0):
             return 90
         else:
             return 270
-    angle = atan
+
+    if (dy ==0):
+        if (dx>=0):
+            return 0
+        else:
+            return 180
+    angle = int(math.degrees(math.atan(dy/dx)))
+    return angle
 
 #define the upper and lower bound of blue taht we want to track
 
