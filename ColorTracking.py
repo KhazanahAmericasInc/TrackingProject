@@ -11,16 +11,16 @@ def tupleAverage (tuple1, tuple2):
     return (x, y)
 
 def isValid (redRect, blueRect):
-    if(redRect[0] < 30 or redRect[1] < 30): #if individual edge is too small
+    if(redRect[2] < 30 or redRect[3] < 30): #if individual edge is too small
+        print("Red edge length too small")
+        return False
+    if(blueRect[2]< 30 or blueRect[3] < 30):
+        print("Blue edge length too small")
+        return False
+    if(redRect[2] * redRect[3] < 1500): #if total area is too small
         print("Red area too small")
         return False
-    if(blueRect[0]<30 or blueRect[1] < 30):
-        print("Blue area too small")
-        return False
-    if(redRect[0] * redRect[1] < 3200): #if total area is too small
-        print("Red area too small")
-        return False
-    if(blueRect[0] * blueRect[1] < 3200):
+    if(blueRect[2] * blueRect[3] < 1500):
         print("Blue area too small")
         return False
     distance = (abs(RedCenter[0] - BlueCenter[0])**2 + abs(RedCenter[1] - BlueCenter[1])**2)**0.5
