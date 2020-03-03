@@ -26,11 +26,19 @@ while (True):
 
 
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
-    print(corners)
 
-    #starting_point = corners[0][0]
 
-   # print(starting_point)
+    if (len(corners)!=0):
+        aruco.drawDetectedMarkers(frame, corners, ids, (0,0,0))
+        coordinates = tuple(corners[0])
+
+        centerY = int((coordinates[0][0][1] + coordinates[0][2][1]) / 2)
+        centerX = int((coordinates[0][0][0] + coordinates[0][2][0]) / 2)
+        Center = (centerX,centerY)
+        cv2.circle(gray, Center, 2, (255,0,0), thickness=1)
+        cv2.putText(gray, ('Center %d,%d' % Center), (10, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 2,
+                    cv2.LINE_AA)
+        aruco.drawDetectedMarkers(gray, corners, borderColor=(255,255,255))
     """
     if ids != None:
         ret = aruco.estimatePoseSingleMarkers(corners, marker_size)
