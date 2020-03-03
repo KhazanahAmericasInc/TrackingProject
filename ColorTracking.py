@@ -2,7 +2,8 @@ import time
 import cv2
 import numpy as np
 import math
-from numpy import mean
+from StateMachine.DroneObject import DroneObject
+
 
 #define the upper and lower bound of blue taht we want to track
 
@@ -82,13 +83,37 @@ def orientation (RedCenter, BlueCenter):
 
     return angle
 
-def DistancetoCamera(knownWidth, focalLength, perWidth):
-    return (knownWidth*focalLength)/ perWidth
+def DistancetoCamera(redRect, blueRect, knownWidth, focalLength):
+    if (redRect[2] > redRect[3]): #if height is shorter than width, then width is the height and height is the width (rectangle is flipped)
+        perWidth = redRect[3]+blueRect[3]
+    else:
+        perWidth = redRect[2] + blueRect[2]
+    return (knownWidth*focalLength)/perWidth
 
+def DetermineFocalLength(blueRect, redRect):
 
+    return ((redRect[2]+blueRect[2]) * 15/ 8)
+
+def StateTransition(orientation):
+    if (orientation < 100 and orientation > 80):
+        drone.on_event("take_off")
+        time.sleep(5)
+        for i in range (0,5):
+            print("===take off complete===")
+        drone.on_event("track")
+
+    elif (orientation < 280 and orientation > 260):
+        drone.on_event("land")
+        time.sleep(5)
+        for i in range (0,5):
+            print("===landing complete===")
+        drone.on_event("idle")
 
 if __name__ == "__main__":
     camera = cv2.VideoCapture(0)
+    FOCAL_LENGTH = 500
+    KNOWN_WIDTH = 8
+    drone = DroneObject()
 
     while True:
         (grabbed, frame) = camera.read()
@@ -130,8 +155,11 @@ if __name__ == "__main__":
                 cv2.putText(frame, ('Center %d,%d' % Center), (10, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (255,255,255), 2, cv2.LINE_AA)
                 cv2.putText(frame, ('Orientation %d' % Angle), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 2,
                             cv2.LINE_AA)
-
-
+                Distance = DistancetoCamera(redRect, blueRect, KNOWN_WIDTH, FOCAL_LENGTH)
+                cv2.putText(frame, ('Distanace %d' % Distance), (10, 65), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 2,
+                            cv2.LINE_AA)
+                StateTransition(Angle)
+        cv2.putText(frame, ("Drone state: %s" % drone.state), (450, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (255,255,255), 2, cv2.LINE_AA)
         cv2.imshow("tracking", frame)
         cv2.imshow("blue", blue)
         cv2.imshow("red", red)

@@ -1,0 +1,15 @@
+from StateMachine.DroneObject import DroneObject
+import time
+drone = DroneObject()
+time.sleep(1)
+drone.on_event("take_off")
+print(drone.state)
+time.sleep(2)
+drone.on_event("take_off")
+time.sleep(2)
+drone.on_event("track")
+time.sleep(3)
+drone.on_event("land")
+time.sleep(2)
+drone.on_event("idle")
+time.sleep(10)
