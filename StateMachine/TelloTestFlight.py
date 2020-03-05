@@ -1,4 +1,4 @@
-from StateMachine.DroneObject import DroneObject
+#from StateMachine.DroneObject import DroneObject
 import time
 import cv2
 from djitellopy import Tello
@@ -23,7 +23,7 @@ if not tello.streamon():
 print ("Current battery is " + tello.get_battery())
 
 tello.takeoff()
-time.sleep(1)
+time.sleep(3)
 
 tello.streamon()
 cv2.namedWindow("drone")

@@ -9,7 +9,7 @@ from StateMachine.DroneObject import DroneObject
 
 blueLower= np.array([82,42,0], dtype = "uint8")
 blueUpper = np.array([255,147,67], dtype = "uint8")
-redLower = np.array([15,15,130], dtype = "uint8")
+redLower = np.array([10,10,120], dtype = "uint8")
 redUpper = np.array([115,115,255], dtype = "uint8")
 RedCenter = (0,0) #(x,y)
 BlueCenter = (0,0) #(x,y)
@@ -90,6 +90,7 @@ def DistancetoCamera(redRect, blueRect, knownWidth, focalLength):
         perWidth = redRect[2] + blueRect[2]
     return (knownWidth*focalLength)/perWidth
 
+
 def DetermineFocalLength(blueRect, redRect):
 
     return ((redRect[2]+blueRect[2]) * 15/ 8)
@@ -97,17 +98,11 @@ def DetermineFocalLength(blueRect, redRect):
 def StateTransition(orientation):
     if (orientation < 100 and orientation > 80):
         drone.on_event("take_off")
-        time.sleep(5)
-        for i in range (0,5):
-            print("===take off complete===")
-        drone.on_event("track")
+
 
     elif (orientation < 280 and orientation > 260):
         drone.on_event("land")
-        time.sleep(5)
-        for i in range (0,5):
-            print("===landing complete===")
-        drone.on_event("idle")
+
 
 if __name__ == "__main__":
     camera = cv2.VideoCapture(0)
