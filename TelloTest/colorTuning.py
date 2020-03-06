@@ -1,18 +1,16 @@
+import sys
 import time
 import cv2
 import numpy as np
 import math
 from StateMachine.DroneObject import DroneObject
-import sys
 
 #define the upper and lower bound of blue taht we want to track
 
-blueLower= np.array([50,38,0], dtype = "uint8")
+blueLower= np.array([65,40,8], dtype = "uint8")
 blueUpper = np.array([255,120,75], dtype = "uint8")
-redLower = np.array([0,0,105], dtype = "uint8")
+redLower = np.array([5,0,105], dtype = "uint8")
 redUpper = np.array([75,70,255], dtype = "uint8")
-
-
 RedCenter = (0,0) #(x,y)
 BlueCenter = (0,0) #(x,y)
 redRect = (0,0,0,0) #x,y,w,h
@@ -110,7 +108,7 @@ if __name__ == "__main__":
     frame_read = drone.tello.get_frame_read()
     time.sleep(5)
     FOCAL_LENGTH = 1000
-    KNOWN_WIDTH = 14
+    KNOWN_WIDTH = 8
     FPS = 30
 
     while True:
@@ -157,11 +155,8 @@ if __name__ == "__main__":
                             2,
                             cv2.LINE_AA)
                 StateTransition(Angle)
-                drone.set_parameter(Center[0], Center[1], Distance)
-                drone.action()
         cv2.putText(frame, ("Drone state: %s" % drone.state), (600, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255),
                     2, cv2.LINE_AA)
-
         #cv2.putText(frame, ("Drone battery: %s " % str(drone.tello.get_battery()), (600, 400), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255),
                    # 2, cv2.LINE_AA))
 
@@ -178,5 +173,4 @@ if __name__ == "__main__":
             break
 
     cv2.destroyAllWindows()
-    drone.tello.end()
     sys.exit()

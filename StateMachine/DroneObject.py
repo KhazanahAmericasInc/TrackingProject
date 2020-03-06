@@ -12,14 +12,16 @@ class DroneObject:
         self.tello = Tello()
         self.coordinate = (0, 0)
         self.FPS = 30
+        self.distance = 30 #pre defined, to be changed later
 
 
     def on_event(self, event):
 
         self.state = self.state.on_event(event)
 
-    def set_coordinate (self, x,y):
+    def set_parameter (self, x,y, dist):
         self.coordinate = (x,y)
+        self.distance = dist
 
     def take_off(self):
         self.tello.takeoff()
@@ -37,6 +39,33 @@ class DroneObject:
 
 
     def track(self):
+        if (self.distance > 70):
+            self.tello.move_forward(20)
+            time.sleep(0.05)
+        elif (self.distance < 50):
+            self.tello.move_back(20)
+            time.sleep(0.05)
+
+        if (self.coordinate[0] < 200 and self.coordinate[0]> 0):
+            self.tello.rotate_counter_clockwise(10)
+            time.sleep(0.05)
+        elif(self.coordinate[0] < 400 and self.coordinate[0]>=200):
+            self.tello.move_left(20)
+            time.sleep(0.05)
+
+        if (self.coordinate[0] < 759 and self.coordinate[0]>= 559):
+            self.tello.move_right(20)
+            time.sleep(0.05)
+        elif(self.coordinate[0]< 959 and self.coordinate[0]>= 759):
+            self.tello.rotate_clockwise(10)
+            time.sleep(0.05)
+
+        if (self.coordinate[1] > 0 and self.coordinate[1]<=200):
+            self.tello.move_up(20)
+            time.sleep(0.05)
+        elif (self.coordinate[1]>=519 and self.coordinate[1] <719):
+            self.tello.move_down(20)
+            time.sleep(0.05)
         return
 
 
