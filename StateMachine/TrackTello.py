@@ -153,9 +153,8 @@ if __name__ == "__main__":
                             2,
                             cv2.LINE_AA)
                 Distance = DistancetoCamera(redRect, blueRect, KNOWN_WIDTH, FOCAL_LENGTH)
-                cv2.putText(frame, ('Distanace %d' % Distance), (10, 65), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255),
-                            2,
-                            cv2.LINE_AA)
+                cv2.putText(frame, ('Distance %d' % Distance), (10, 65), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255),
+                            2, cv2.LINE_AA)
                 StateTransition(Angle)
                 drone.set_parameter(Center[0], Center[1], Distance)
                 drone.action()
