@@ -3,10 +3,15 @@ from djitellopy import Tello
 import time
 import sys
 
+#This class is to interact with djitellopy API to control the drone. 
+#It is also responsible to generates events for state transition
 
 class DroneObject:
 
-
+    #initialize the object
+    #Set default state to IdleState()
+    #Create Tello object from the API
+    #set default values for coordinate, FPS, distance, and tilt
     def __init__(self):
         self.state = IdleState()
         self.tello = Tello()
@@ -15,22 +20,29 @@ class DroneObject:
         self.distance = 30 #pre defined, to be changed later
         self.tilt = 0
 
-
+    #Generates pass events to tellodrone class
     def on_event(self, event):
 
         self.state = self.state.on_event(event)
-
+    
+    #setter for member variables
     def set_parameter (self, x,y, dist, tilt):
         self.coordinate = (x,y)
         self.distance = dist
         self.tilt = tilt
 
+    #for take off the drone, called when the drone is in takeoff state
+    #when take off is complete, trigger event for track
     def take_off(self):
         self.tello.takeoff()
         for i in range (0,3):
             print("taking off %d /3" % (i+1))
             time.sleep(1)
         self.on_event("track")
+
+        
+    #for landing the drone, called when the drone is in landingstate
+    #when landing is complete, trigger event for idle
 
     def land(self):
         self.tello.land()
@@ -39,9 +51,10 @@ class DroneObject:
             time.sleep(1)
         self.on_event("idle")
 
-
+    #for tracking the drone, called when the drone is in track state
+    #when tilt is active, it will prioritize the turning motion over the other motions
+    #controls shifting, moving up and down, forward backwards, and turning
     def track(self):
-
         if(self.tilt <= 0.95 and self.tilt != 0):
             self.tello.rotate_clockwise(int((1-self.tilt)*100))
             time.sleep(0.05)
@@ -78,7 +91,11 @@ class DroneObject:
             elif (self.coordinate[1] >= 519 and self.coordinate[1] < 719):
                 self.tello.move_down(20)
                 time.sleep(0.05)
-
+    
+    #For setting up the drone
+        #Establish connection
+        #Initialize streamming
+        #Display battery
     def setup(self):
         if not self.tello.connect():
             print("Tello not connected")
@@ -97,6 +114,8 @@ class DroneObject:
         self.tello.streamon()
         frame_read = self.tello.get_frame_read()
 
+        
+    #For calling corresponding functions based on their state
     def action(self):
         print("current state is" , self.state)
         print(str(self.state))
