@@ -13,61 +13,71 @@ class DroneObject:
         self.coordinate = (0, 0)
         self.FPS = 30
         self.distance = 30 #pre defined, to be changed later
+        self.tilt = 0
 
 
     def on_event(self, event):
 
         self.state = self.state.on_event(event)
 
-    def set_parameter (self, x,y, dist):
+    def set_parameter (self, x,y, dist, tilt):
         self.coordinate = (x,y)
         self.distance = dist
+        self.tilt = tilt
 
     def take_off(self):
         self.tello.takeoff()
-        for i in range (0,5):
-            print("taking off %d /5" % (i+1))
+        for i in range (0,3):
+            print("taking off %d /3" % (i+1))
             time.sleep(1)
         self.on_event("track")
 
     def land(self):
         self.tello.land()
-        for i in range (0,5):
-            print("landing %d / 5" % (i+1))
+        for i in range (0,3):
+            print("landing %d / 3" % (i+1))
             time.sleep(1)
         self.on_event("idle")
 
 
     def track(self):
-        if (self.distance > 70):
-            self.tello.move_forward(20)
-            time.sleep(0.05)
-        elif (self.distance < 50):
-            self.tello.move_back(20)
-            time.sleep(0.05)
 
-        if (self.coordinate[0] < 200 and self.coordinate[0]> 0):
-            self.tello.rotate_counter_clockwise(10)
+        if(self.tilt <= 0.95 and self.tilt != 0):
+            self.tello.rotate_clockwise(int((1-self.tilt)*100))
             time.sleep(0.05)
-        elif(self.coordinate[0] < 400 and self.coordinate[0]>=200):
-            self.tello.move_left(20)
+        elif(self.tilt >= 1.05):
+            self.tello.rotate_counter_clockwise(int((self.tilt-1)*100))
             time.sleep(0.05)
+        else:
+            if (self.distance > 60):
+                forward = int((self.distance - 60))
+                if ((forward < 20)):
+                    self.tello.move_forward(20)
+                else:
+                    self.tello.move_forward(forward)
+                time.sleep(0.05)
+            elif (self.distance < 50):
+                backward = int(abs(self.distance - 50))
+                if ((backward < 20)):
+                    self.tello.move_back(20)
+                else:
+                    self.tello.move_back(backward)
+                time.sleep(0.05)
 
-        if (self.coordinate[0] < 759 and self.coordinate[0]>= 559):
-            self.tello.move_right(20)
-            time.sleep(0.05)
-        elif(self.coordinate[0]< 959 and self.coordinate[0]>= 759):
-            self.tello.rotate_clockwise(10)
-            time.sleep(0.05)
+            if (self.coordinate[0] < 400 and self.coordinate[0] >= 0):
+                self.tello.move_left(20)
+                time.sleep(0.05)
 
-        if (self.coordinate[1] > 0 and self.coordinate[1]<=200):
-            self.tello.move_up(20)
-            time.sleep(0.05)
-        elif (self.coordinate[1]>=519 and self.coordinate[1] <719):
-            self.tello.move_down(20)
-            time.sleep(0.05)
-        return
+            elif (self.coordinate[0] < 959 and self.coordinate[0] >= 559):
+                self.tello.move_right(20)
+                time.sleep(0.05)
 
+            if (self.coordinate[1] > 0 and self.coordinate[1] <= 200):
+                self.tello.move_up(20)
+                time.sleep(0.05)
+            elif (self.coordinate[1] >= 519 and self.coordinate[1] < 719):
+                self.tello.move_down(20)
+                time.sleep(0.05)
 
     def setup(self):
         if not self.tello.connect():
