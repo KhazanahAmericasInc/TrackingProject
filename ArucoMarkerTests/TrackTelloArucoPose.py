@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import cv2.aruco as aruco
 import sys, time, math
-
+from StateMachine.DroneObject import DroneObject
 #--- Define Tag
 id_to_find  = 1
 marker_size  = 9.5 #- [cm]
@@ -38,12 +38,41 @@ def rotationMatrixToEulerAngles(R):
 
     return np.array([x, y, z])
 
+def StateTransition(orientation):
+    if (abs(orientation) > 180):
+        print("invalid orientation, orientation should be between -180 and 180")
+        return
 
+    if (abs(orientation) > 170):
+        drone.on_event("take_off")
+
+
+    elif (abs(orientation) <20):
+        drone.on_event("land")
+    return
+
+def Draw (frame, Distance, angle, Center):
+
+    cv2.putText(frame, ('Distance %d' % Distance), (600, 45), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255),
+                2, cv2.LINE_AA)
+    cv2.circle(frame, (int(Center[0]),int(Center[1])), 2, (255, 0, 0), thickness=1)
+
+    cv2.putText(frame, ('Orientation %d' % angle), (600, 60), cv2.FONT_HERSHEY_SIMPLEX, .5, (0, 0, 0),
+                2,
+                cv2.LINE_AA)
+    cv2.putText(frame, ('Center %d,%d' % Center), (600, 15), cv2.FONT_HERSHEY_SIMPLEX, .5, (0, 0, 0), 2,
+                cv2.LINE_AA)
+
+    return
 
 if __name__ == "__main__":
+    drone = DroneObject()
+    drone.setup()
+    frame_read = drone.tello.get_frame_read()
+    time.sleep(5)
 
     # --- Get the camera calibration path
-    calib_path = "./WebcamCalibrationPhoto/"
+    calib_path = "./DroneCalibrationPhoto/"
     camera_matrix = np.loadtxt(calib_path + 'cameraMatrix.txt', delimiter=',')
     camera_distortion = np.loadtxt(calib_path + 'cameraDistortion.txt', delimiter=',')
 
@@ -56,26 +85,13 @@ if __name__ == "__main__":
     # --- Define the aruco dictionary
     aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
     parameters = aruco.DetectorParameters_create()
-
-
-
-    # --- Capture the videocamera (this may also be a video or a picture)
-    cap = cv2.VideoCapture(0)
-    # -- Set the camera size as the one it was calibrated with
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-
     # -- Font for the text in the image
     font = cv2.FONT_HERSHEY_PLAIN
-
-
-
-
 
     while True:
 
         # -- Read the camera frame
-        ret, frame = cap.read()
+        frame = frame_read.frame
 
         # -- Convert in gray scale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # -- remember, OpenCV stores color images in Blue, Green, Red
@@ -84,7 +100,7 @@ if __name__ == "__main__":
         corners, ids, rejected = aruco.detectMarkers(image=gray, dictionary=aruco_dict, parameters=parameters,
                                                      cameraMatrix=camera_matrix, distCoeff=camera_distortion)
 
-        if ids is not None:
+        if ids is not None:#when we detect something
             # -- ret = [rvec, tvec, ?]
             # -- array of rotation and position of each marker in camera frame
             # -- rvec = [[rvec_1], [rvec_2], ...]    attitude of the marker respect to camera frame
@@ -127,15 +143,33 @@ if __name__ == "__main__":
             str_attitude = "CAMERA Attitude r=%4.0f  p=%4.0f  y=%4.0f" % (
             math.degrees(roll_camera), math.degrees(pitch_camera),
             math.degrees(yaw_camera))
-            cv2.putText(frame, str_attitude, (0, 60), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
+
+
+            cv2.putText(frame, str_attitude, (0, 60), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            Distance = tvec[2]
+            Angle = math.degrees(yaw_marker)
+            coordinates = tuple(corners[0])
+            centerY = int((coordinates[0][0][1] + coordinates[0][2][1]) / 2)
+            centerX = int((coordinates[0][0][0] + coordinates[0][2][0]) / 2)
+            Center = (centerX, centerY)
+            Tilt = math.degrees(pitch_marker)/400+1
+            drone.set_parameter(Center[0], Center[1], Distance, Tilt)
+            StateTransition(Angle)
+            drone.action()
+            Draw(frame, Distance, Angle, Center)
         # --- Display the frame
+        cv2.putText(frame, str(drone.state),(600,90), font, 1, (0,255,0), 2, cv2.LINE_AA)
         cv2.imshow('frame', frame)
 
         # --- use 'q' to quit
         key = cv2.waitKey(1) & 0xFF
+        if key == ord('l'):
+            time.sleep(3)
+            drone.tello.land()
         if key == ord('q'):
-            cap.release()
+
             cv2.destroyAllWindows()
-            break
+            sys.exit()
+
 

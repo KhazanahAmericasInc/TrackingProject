@@ -10,19 +10,11 @@ __date__ = "01/06/2018"
 
 def save_snaps(width=0, height=0, name="snapshot", folder=".", raspi=False):
 
-    if raspi:
-        os.system('sudo modprobe bcm2835-v4l2')
-    if (not USING_DRONE):
-        cap = cv2.VideoCapture(0)
-        if width > 0 and height > 0:
-            print("Setting the custom Width and Height")
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    else:
-        drone = DroneObject()
-        drone.setup()
-        cap = drone.tello.get_frame_read()
-        time.sleep(5)
+
+    drone = DroneObject()
+    drone.setup()
+    cap = drone.tello.get_frame_read()
+    time.sleep(5)
 
     try:
         if not os.path.exists(folder):
@@ -37,16 +29,12 @@ def save_snaps(width=0, height=0, name="snapshot", folder=".", raspi=False):
         pass
 
     nSnap   = 0
-    if (not USING_DRONE):
-        w       = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-        h       = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-
+    w = 0
+    h = 0
     fileName    = "%s/%s_%d_%d_" %(folder, name, w, h)
     while True:
-        if (not USING_DRONE):
-            ret, frame = cap.read()
-        else:
-            frame = cap.frame
+
+        frame = cap.frame
         cv2.imshow('camera', frame)
 
         key = cv2.waitKey(1) & 0xFF
@@ -60,8 +48,6 @@ def save_snaps(width=0, height=0, name="snapshot", folder=".", raspi=False):
     cap.release()
     cv2.destroyAllWindows()
 
-
-USING_DRONE = False
 
 def main():
     # ---- DEFAULT VALUES ---
@@ -77,17 +63,16 @@ def main():
     parser.add_argument("--name", default=FILE_NAME, help="Picture file name (default: snapshot)")
     parser.add_argument("--dwidth", default=FRAME_WIDTH, type=int, help="<width> px (default the camera output)")
     parser.add_argument("--dheight", default=FRAME_HEIGHT, type=int, help="<height> px (default the camera output)")
-    parser.add_argument("--raspi", default=False, type=bool, help="<bool> True if using a raspberry Pi")
-    parser.add_argument("--drone", default=False, type=bool, help="<bool> True if using Tello Drone")
+
     args = parser.parse_args()
 
     SAVE_FOLDER = args.folder
     FILE_NAME = args.name
     FRAME_WIDTH = args.dwidth
     FRAME_HEIGHT = args.dheight
-    USING_DRONE = args.drone
 
-    save_snaps(width=args.dwidth, height=args.dheight, name=args.name, folder=args.folder, raspi=args.raspi)
+
+    save_snaps(width=args.dwidth, height=args.dheight, name=args.name, folder=args.folder)
 
     print("Files saved")
 

@@ -72,6 +72,10 @@ def Tilt (state, frame, coordinates, orientation):
             print("turn right")
         else:
             print("straight")
+
+
+
+
 if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
     angle = 0
