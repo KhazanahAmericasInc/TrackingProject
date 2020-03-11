@@ -98,7 +98,7 @@ def Draw (frame, Distance, coordinates, angle, Center, ids, corners):
         #frame: frame to draw on
         #coordinates: coordinates of the detected marker
         #orientation: orientation of the marker
-
+#Returns: ratio of the right side length over the left side length, 0 if nothing is detected
 def Tilt(state, frame, coordinates, orientation):
     Ratio = 0
     if (str(state) != "TrackState"):
