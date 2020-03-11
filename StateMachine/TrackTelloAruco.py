@@ -5,10 +5,6 @@ import sys, time, math
 from StateMachine.DroneObject import DroneObject
 
 
-'''
-    drawMarker(...)
-        drawMarker(dictionary, id, sidePixels[, img[, borderBits]]) -> img
-'''
 
 
 #Find Distance
@@ -97,6 +93,11 @@ def Draw (frame, Distance, coordinates, angle, Center, ids, corners):
     aruco.drawDetectedMarkers(frame, corners, borderColor=(255, 255, 255))
     return
 
+#Determines the amount of tilt of the marker
+#Param: state: state of the drone
+        #frame: frame to draw on
+        #coordinates: coordinates of the detected marker
+        #orientation: orientation of the marker
 
 def Tilt(state, frame, coordinates, orientation):
     Ratio = 0
