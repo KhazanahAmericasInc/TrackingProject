@@ -1,7 +1,7 @@
 # TrackingProject
 The goal of this project is to control robots or drones using a coloured marker or Aruco Marker
 
-#Libraries
+# Libraries
 Tested on Ubuntu 18.04 LTS, should be able to run on Ubuntu 16.04 LTS, 17.04, and 19.04, 
 python 3.6.x,3.7.x,3.8.x (any variation)
 
@@ -22,7 +22,7 @@ To install the required libraires:
 
 `pip install djytellopy` 
 
-#To Run
+# To Run
 Please use Linux OS, this will not work with Windows._ 
 1. Turn on Tello Drone
 2. Connect to Tello Wifi
@@ -42,10 +42,10 @@ To run aruco marker with pose detection, type:
 `python3 TrackTelloArucoPose.py`
 - use 9.5cm aruco marker with white border
 
-#Control
+# Control
 The drone will always attempt the center the marker in the field of view at a distance of 50cm. The drone will also turn to align its orientation with the orientation of the marker
 
-#Documentation
+# Documentation
 Tello Drone Project
 https://www.evernote.com/shard/s507/sh/32ab84e8-bef7-4793-beba-94545d6bd723/7b9949a631ed8c73bd018e94cba1a207
 
