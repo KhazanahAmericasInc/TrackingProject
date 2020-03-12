@@ -28,16 +28,17 @@ Please use Linux OS, this will not work with Windows._
 2. Connect to Tello Wifi
 3. Open terminal on Ubuntu 18.04 LTS, go to the main directory of this project
 To run color marker tracking version, run:
-`python3 ColorTracking.py`
+`python3 TrackTello.py`
 - use 14.5cm side length large color marker
+- Note: color tracking is inconsistent, please tune the color parameter from line 10 - 13 in that file
+- Note2: turn control for color tracking is different from the rest. This will send a turn signal when the marker is near the edge, not when the marker is tilted
+
 
 To run aruco marker edge tracking version, run:
 `python3 TrackTelloAruco.py`
 - use 9.5cm aruco marker with white border
 
 To run aruco marker with pose detection, type:
-`cd ArucoMarkerTests` 
-
 `python3 TrackTelloArucoPose.py`
 - use 9.5cm aruco marker with white border
 
