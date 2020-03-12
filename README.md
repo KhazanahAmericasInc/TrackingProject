@@ -1,4 +1,4 @@
-# TrackingProject
+# Aruco Wand for Tello Control
 The goal of this project is to control robots or drones using a coloured marker or Aruco Marker
 
 # Libraries
