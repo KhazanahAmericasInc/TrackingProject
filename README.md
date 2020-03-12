@@ -42,6 +42,9 @@ To run aruco marker with pose detection, type:
 `python3 TrackTelloArucoPose.py`
 - use 9.5cm aruco marker with white border
 
+#Control
+The drone will always attempt the center the marker in the field of view at a distance of 50cm. The drone will also turn to align its orientation with the orientation of the marker
+
 #Documentation
 Tello Drone Project
 https://www.evernote.com/shard/s507/sh/32ab84e8-bef7-4793-beba-94545d6bd723/7b9949a631ed8c73bd018e94cba1a207
