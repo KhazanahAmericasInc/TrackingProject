@@ -1,12 +1,32 @@
 # TrackingProject
 The goal of this project is to control robots or drones using a coloured marker or Aruco Marker
-To Run: 
 
-##To Run
-_Please use Linux OS, this will not work with Windows._ 
+#Libraries
+Tested on Ubuntu 18.04 LTS, should be able to run on Ubuntu 16.04 LTS, 17.04, and 19.04, 
+python 3.6.x,3.7.x,3.8.x (any variation)
+
+Tested on:
+opencv-python 4.2.0.32
+aruco 3.1.2.0
+numpy 1.18.1
+djitellopy 1.5
+
+
+To install the required libraires: 
+
+`pip install aruco` 
+
+`pip install opencv-python` 
+
+`pip install numpy` 
+
+`pip install djytellopy` 
+
+#To Run
+Please use Linux OS, this will not work with Windows._ 
 1. Turn on Tello Drone
 2. Connect to Tello Wifi
-3. Open terminal on Ubuntu 18.04 LTS, go to the main directory of TrackingProject
+3. Open terminal on Ubuntu 18.04 LTS, go to the main directory of this project
 To run color marker tracking version, run:
 `python3 ColorTracking.py`
 - use 14.5cm side length large color marker
@@ -16,11 +36,12 @@ To run aruco marker edge tracking version, run:
 - use 9.5cm aruco marker with white border
 
 To run aruco marker with pose detection, type:
-`cd ArucoMarkerTests`
+`cd ArucoMarkerTests` 
+
 `python3 TrackTelloArucoPose.py`
 - use 9.5cm aruco marker with white border
 
-##Checkout Evernote Documentation
+#Documentation
 Tello Drone Project
 https://www.evernote.com/shard/s507/sh/32ab84e8-bef7-4793-beba-94545d6bd723/7b9949a631ed8c73bd018e94cba1a207
 
