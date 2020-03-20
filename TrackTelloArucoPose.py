@@ -38,6 +38,7 @@ def rotationMatrixToEulerAngles(R):
 
     return np.array([x, y, z])
 
+#Sends command for Take off and Land when it detects marker in desinated orientations
 def StateTransition(orientation):
     if (abs(orientation) > 180):
         print("invalid orientation, orientation should be between -180 and 180")
@@ -51,6 +52,7 @@ def StateTransition(orientation):
         drone.on_event("land")
     return
 
+#Draws HUD on the screen
 def Draw (frame, Distance, angle, Center):
 
     cv2.putText(frame, ('Distance %d' % Distance), (600, 45), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255),
@@ -66,6 +68,7 @@ def Draw (frame, Distance, angle, Center):
     return
 
 if __name__ == "__main__":
+    #Set up Drone object, and establish connection and streaming
     drone = DroneObject()
     drone.setup()
     frame_read = drone.tello.get_frame_read()
@@ -144,9 +147,9 @@ if __name__ == "__main__":
             math.degrees(roll_camera), math.degrees(pitch_camera),
             math.degrees(yaw_camera))
 
-
-
             cv2.putText(frame, str_attitude, (0, 60), font, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            
+            #Calculated data from orientation and position vectors that are required by the statemachine
             Distance = tvec[2]
             Angle = math.degrees(yaw_marker)
             coordinates = tuple(corners[0])
@@ -157,6 +160,7 @@ if __name__ == "__main__":
             drone.set_parameter(Center[0], Center[1], Distance, Tilt)
             StateTransition(Angle)
             drone.action()
+            
             Draw(frame, Distance, Angle, Center)
         # --- Display the frame
         cv2.putText(frame, str(drone.state),(600,90), font, 1, (0,255,0), 2, cv2.LINE_AA)
